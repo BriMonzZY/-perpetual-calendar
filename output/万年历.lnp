@@ -1,0 +1,9 @@
+"..\output\LCD1602.obj",
+"..\output\main.obj",
+"..\output\lunar.obj",
+"..\output\Key_Buzzer.obj",
+"..\output\DS1302.obj",
+"..\output\DS18B20.obj",
+"..\output\app.obj" 
+TO "..\output\万年历" 
+PRINT(".\Listings\万年历.m51") RAMSIZE(256) 

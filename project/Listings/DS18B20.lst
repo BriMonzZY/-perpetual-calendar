@@ -1,0 +1,123 @@
+C51 COMPILER V9.60.0.0   DS18B20                                                           12/29/2020 14:31:49 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN ..\output\DS18B20.obj
+COMPILER INVOKED BY: D:\app\keil\C51\BIN\C51.EXE ..\source\DS18B20.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
+                    -\Listings\DS18B20.lst) TABS(2) OBJECT(..\output\DS18B20.obj)
+
+line level    source
+
+   1          #include "config.h"
+   2          #include "DS18B20.h" 
+   3          
+   4          /*us延时函数，执行一次US--所需6.5us进入一次函数需要11.95us*/
+   5          void Delay_us(uint8 us)
+   6          {
+   7   1        while(us--);  
+   8   1      }
+   9          
+  10          /*初始化DS18B20,并获取存在脉冲*/
+  11          bit GetDS18B20Ack()
+  12          {
+  13   1        bit ack;
+  14   1        EA = 0;   //禁止总中断
+  15   1        DS18B20_IO = 1;
+  16   1        _nop_();
+  17   1        DS18B20_IO = 0;
+  18   1        Delay_us(75); //拉低总线499.45us 挂接在总线上的18B20将会全部被复位
+  19   1        DS18B20_IO = 1; //释放总线
+  20   1        Delay_us(11); //延时83.45us 等待18B20发回存在信号
+  21   1        ack = DS18B20_IO;
+  22   1        while(!DS18B20_IO); //等待存在脉冲结束
+  23   1        _nop_();
+  24   1        EA = 1;   //使能总中断
+  25   1      
+  26   1        return (ack);
+  27   1      }
+  28          
+  29          /*单总线写一个字节*/
+  30          void write_byte(uint8 dat)
+  31          {
+  32   1        uint8 i;
+  33   1        EA = 0;   //禁止总中断
+  34   1        for(i=0;i<8;i++)
+  35   1        {
+  36   2          DS18B20_IO = 0;
+  37   2          _nop_();//产生些时序
+  38   2          DS18B20_IO = dat & 0x01;
+  39   2          Delay_us(10);//76.95us
+  40   2          DS18B20_IO = 1; //释放总线准备下一次数据写入
+  41   2          _nop_();
+  42   2          dat >>= 1;
+  43   2        }
+  44   1        EA = 1;   //使能总中断
+  45   1      }
+  46          /*单总线读一个字节*/
+  47          uint8 read_byte()
+  48          {
+  49   1        uint8 i, j, dat;
+  50   1        EA = 0;   //禁止总中断
+  51   1        for(i=0;i<8;i++)
+  52   1        {
+  53   2          DS18B20_IO = 0;
+  54   2          _nop_();//产生读时序
+C51 COMPILER V9.60.0.0   DS18B20                                                           12/29/2020 14:31:49 PAGE 2   
+
+  55   2          DS18B20_IO = 1;
+  56   2          _nop_();//释放总线
+  57   2          j = DS18B20_IO;
+  58   2          Delay_us(10);//76.95us
+  59   2          DS18B20_IO = 1;
+  60   2          _nop_();
+  61   2          dat = (j<<7)|(dat>>1);  
+  62   2        }
+  63   1        EA = 1;   //使能总中断
+  64   1        return (dat);
+  65   1      }
+  66          
+  67          /* 启动一次18B20温度转换，返回值-表示是否启动成功 */
+  68          bit Start18B20()
+  69          {
+  70   1          bit ack;
+  71   1          
+  72   1          ack = GetDS18B20Ack();   //执行总线复位，并获取18B20应答
+  73   1          if (ack == 0)          //如18B20正确应答，则启动一次转换
+  74   1          {
+  75   2              write_byte(0xCC);  //跳过ROM操作
+  76   2              write_byte(0x44);  //启动一次温度转换
+  77   2          }
+  78   1          return ~ack;   //ack==0表示操作成功，所以返回值对其取反
+  79   1      }
+  80          
+  81          /* 读取DS18B20转换的温度值，返回值-表示是否读取成功 */
+  82          bit Get18B20Temp(int16 *temp)
+  83          {
+  84   1          bit ack;
+  85   1          uint8 LSB, MSB; //16bit温度值的低字节和高字节
+  86   1          
+  87   1          ack = GetDS18B20Ack();    //执行总线复位，并获取18B20应答
+  88   1          if (ack == 0)           //如18B20正确应答，则读取温度值
+  89   1          {
+  90   2              write_byte(0xCC);   //跳过ROM操作
+  91   2              write_byte(0xBE);   //发送读命令
+  92   2              LSB = read_byte();  //读温度值的低字节
+  93   2              MSB = read_byte();  //读温度值的高字节
+  94   2              *temp = ((int16)MSB << 8) + LSB;  //合成为16bit整型数
+  95   2          }
+  96   1        return ~ack;  //ack==0表示操作应答，所以返回值为其取反值
+  97   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    212    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       3
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
