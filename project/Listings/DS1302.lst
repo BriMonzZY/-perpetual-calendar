@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   DS1302                                                            12/29/2020 14:31:49 PAGE 1   
+C51 COMPILER V9.60.0.0   DS1302                                                            01/02/2021 20:11:12 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DS1302
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          /*=================================================
   54          *函数名称：DS1302_R_DAT
-C51 COMPILER V9.60.0.0   DS1302                                                            12/29/2020 14:31:49 PAGE 2   
+C51 COMPILER V9.60.0.0   DS1302                                                            01/02/2021 20:11:12 PAGE 2   
 
   55          *函数功能：读DS1302数据
   56          *说明：先写入命令字节后读出对应数据
@@ -126,7 +126,7 @@ line level    source
  114          *函数名称：DS1302_Burst_Read
  115          *函数功能：突发模式读DS1302时钟日历数据
  116          *说明： 读取8个字节的DS1302时钟日历数据
-C51 COMPILER V9.60.0.0   DS1302                                                            12/29/2020 14:31:49 PAGE 3   
+C51 COMPILER V9.60.0.0   DS1302                                                            01/02/2021 20:11:12 PAGE 3   
 
  117              数组TimeData（数据格式BCD码）
  118          *调用：DS1302_Clear_WP();DS1302_R_Byte();DS1302_Set_WP();
@@ -190,7 +190,7 @@ line level    source
  175   1          struct sTime code InitTime[] = { 
  176   1              0x2017 , 0x08, 0x01, 0x23, 0x59, 0x50, 0x02
  177   1          };  
-C51 COMPILER V9.60.0.0   DS1302                                                            12/29/2020 14:31:49 PAGE 4   
+C51 COMPILER V9.60.0.0   DS1302                                                            01/02/2021 20:11:12 PAGE 4   
 
  178   1        
  179   1          SetRealTime(&InitTime);      //设置DS1302为默认的初始时间

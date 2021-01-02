@@ -223,8 +223,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\source\Key_Buzzer.c</PathWithFileName>
-      <FilenameWithoutPath>Key_Buzzer.c</FilenameWithoutPath>
+      <PathWithFileName>..\source\DS1302.c</PathWithFileName>
+      <FilenameWithoutPath>DS1302.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -235,8 +235,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\source\DS1302.c</PathWithFileName>
-      <FilenameWithoutPath>DS1302.c</FilenameWithoutPath>
+      <PathWithFileName>..\source\DS18B20.c</PathWithFileName>
+      <FilenameWithoutPath>DS18B20.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -247,8 +247,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\source\DS18B20.c</PathWithFileName>
-      <FilenameWithoutPath>DS18B20.c</FilenameWithoutPath>
+      <PathWithFileName>..\source\Key_Buzzer.c</PathWithFileName>
+      <FilenameWithoutPath>Key_Buzzer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -392,11 +392,6 @@
               <FilePath>..\source\lunar.c</FilePath>
             </File>
             <File>
-              <FileName>Key_Buzzer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\source\Key_Buzzer.c</FilePath>
-            </File>
-            <File>
               <FileName>DS1302.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\DS1302.c</FilePath>
@@ -405,6 +400,11 @@
               <FileName>DS18B20.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\DS18B20.c</FilePath>
+            </File>
+            <File>
+              <FileName>Key_Buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\source\Key_Buzzer.c</FilePath>
             </File>
             <File>
               <FileName>app.c</FileName>
