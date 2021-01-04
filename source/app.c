@@ -46,19 +46,17 @@ uint8 DEC_BCD(uint8 DEC)
 void RefreshTime()
 {
 	uint8 pdata time[10];
-    GetRealTime(&CurTime); //获取当前日期/时间
-	
-		time[0] = (CurTime.hour >> 4) + '0';   //小时十位
-        time[1] = (CurTime.hour & 0x0f) + '0'; //小时个位
-		time[2] = ':';  
-		time[3] = (CurTime.min >> 4) + '0';    //分钟十位
-        time[4] = (CurTime.min & 0x0f) + '0';  //分钟个位
-		time[5] = ':';
-		time[6] = (CurTime.sec >> 4) + '0';    //秒钟十位
-        time[7] = (CurTime.sec & 0x0f) + '0';  //秒钟个位
-		time[8] = '\0';         			   //字符串结束符
-		LCD1602_Dis_Str(0, 1, time);  		   //显示到液晶上
-
+	GetRealTime(&CurTime); //获取当前日期/时间
+	time[0] = (CurTime.hour >> 4) + '0';   //小时十位
+	time[1] = (CurTime.hour & 0x0f) + '0'; //小时个位
+	time[2] = ':';  
+	time[3] = (CurTime.min >> 4) + '0';    //分钟十位
+	time[4] = (CurTime.min & 0x0f) + '0';  //分钟个位
+	time[5] = ':';
+	time[6] = (CurTime.sec >> 4) + '0';    //秒钟十位
+	time[7] = (CurTime.sec & 0x0f) + '0';  //秒钟个位
+	time[8] = '\0';         			   //字符串结束符
+	LCD1602_Dis_Str(0, 1, time);  		   //显示到液晶上
 } 
 
 /* 日期刷新函数，ops-刷新选项：为0时只当日期变化才刷新，非0则立即刷新 */
@@ -159,7 +157,7 @@ void SetShift()
         switch (SetIndex)
         {
             case 0: SetIndex=1;  LCD1602_Set_Cursor(13, 1); break;//光标位于闹钟开关处
-			case 1: SetIndex=2;  LCD1602_Set_Cursor(10, 1); break;//光标位于闹钟分钟处
+						case 1: SetIndex=2;  LCD1602_Set_Cursor(10, 1); break;//光标位于闹钟分钟处
             default: SetIndex=0; LCD1602_Set_Cursor(7, 1); break; //光标位于闹钟小时处
         }
     }

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   DS18B20                                                           01/02/2021 20:11:12 PAGE 1   
+C51 COMPILER V9.60.0.0   DS18B20                                                           01/04/2021 15:27:23 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DS18B20
@@ -62,7 +62,7 @@ line level    source
   52   1        {
   53   2          DS18B20_IO = 0;
   54   2          _nop_();//产生读时序
-C51 COMPILER V9.60.0.0   DS18B20                                                           01/02/2021 20:11:12 PAGE 2   
+C51 COMPILER V9.60.0.0   DS18B20                                                           01/04/2021 15:27:23 PAGE 2   
 
   55   2          DS18B20_IO = 1;
   56   2          _nop_();//释放总线

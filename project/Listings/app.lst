@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 1   
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE APP
@@ -56,382 +56,380 @@ line level    source
   46          void RefreshTime()
   47          {
   48   1        uint8 pdata time[10];
-  49   1          GetRealTime(&CurTime); //获取当前日期/时间
-  50   1        
-  51   1          time[0] = (CurTime.hour >> 4) + '0';   //小时十位
-  52   1              time[1] = (CurTime.hour & 0x0f) + '0'; //小时个位
-  53   1          time[2] = ':';  
-  54   1          time[3] = (CurTime.min >> 4) + '0';    //分钟十位
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 2   
+  49   1        GetRealTime(&CurTime); //获取当前日期/时间
+  50   1        time[0] = (CurTime.hour >> 4) + '0';   //小时十位
+  51   1        time[1] = (CurTime.hour & 0x0f) + '0'; //小时个位
+  52   1        time[2] = ':';  
+  53   1        time[3] = (CurTime.min >> 4) + '0';    //分钟十位
+  54   1        time[4] = (CurTime.min & 0x0f) + '0';  //分钟个位
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 2   
 
-  55   1              time[4] = (CurTime.min & 0x0f) + '0';  //分钟个位
-  56   1          time[5] = ':';
-  57   1          time[6] = (CurTime.sec >> 4) + '0';    //秒钟十位
-  58   1              time[7] = (CurTime.sec & 0x0f) + '0';  //秒钟个位
-  59   1          time[8] = '\0';                  //字符串结束符
-  60   1          LCD1602_Dis_Str(0, 1, time);         //显示到液晶上
-  61   1      
-  62   1      } 
-  63          
-  64          /* 日期刷新函数，ops-刷新选项：为0时只当日期变化才刷新，非0则立即刷新 */
-  65          void RefreshDate(uint8 ops)
-  66          {
-  67   1          uint8 pdata date[12];
-  68   1          static uint8 backup = 0;
-  69   1      
-  70   1          if ((backup!=CurTime.day) || (ops!=0))//如果日期变化或刷新标志位置1则立即刷新
-  71   1          {
-  72   2          date[0] = ((CurTime.year>>12) & 0x0f) + '0';  //年份千位
-  73   2              date[1] = ((CurTime.year>>8) & 0x0f) + '0';   //年份百位
-  74   2              date[2] = ((CurTime.year>>4) & 0x0f) + '0';   //年份十位
-  75   2              date[3] = (CurTime.year & 0x0f) + '0';      //年份个位
-  76   2              date[4] = '-';                              //分隔符
-  77   2              date[5] = (CurTime.mon >> 4) + '0';         //月份十位
-  78   2              date[6] = (CurTime.mon & 0x0f) + '0';       //月份个位
-  79   2              date[7] = '-';                              //分隔符
-  80   2              date[8] = (CurTime.day >> 4) + '0';         //日期十位
-  81   2              date[9] = (CurTime.day & 0x0f) + '0';       //日期个位
-  82   2              date[10] = '\0';                    //字符串结束符
-  83   2              LCD1602_Dis_Str(0, 0, date);            //显示到液晶上
-  84   2          LCD1602_Dis_Str(12, 0, week[CurTime.week]);   //显示星期
-  85   2              backup = CurTime.day;               //刷新上次日期值
-  86   2          }
-  87   1      }
-  88          /*刷新阴历*/
-  89          void RefreshLunar()
-  90          {
-  91   1        uint8 pdata date[12];
-  92   1        GetRealTime(&CurTime); //获取当前日期/时间
-  93   1        Conversion(0, CurTime.year, CurTime.mon, CurTime.day);//根据公历算出阴历
-  94   1        date[0] = 0x02 + '0';  //年份千位
-  95   1        date[1] = 0x00 + '0';   //年份百位
-  96   1        date[2] = ((SpDate.year>>4) & 0x0f) + '0';    //年份十位
-  97   1        date[3] = (SpDate.year & 0x0f) + '0';     //年份个位
-  98   1        date[4] = '-';                              //分隔符
-  99   1        date[5] = (SpDate.mon >> 4) + '0';        //月份十位
- 100   1        date[6] = (SpDate.mon & 0x0f) + '0';      //月份个位
- 101   1        date[7] = '-';                              //分隔符
- 102   1        date[8] = (SpDate.day >> 4) + '0';        //日期十位
- 103   1        date[9] = (SpDate.day & 0x0f) + '0';      //日期个位
- 104   1        date[10] = '\0';                    //字符串结束符
- 105   1        LCD1602_Dis_Str(0, 0, "Lunar");         //阴历字符    
- 106   1        LCD1602_Dis_Str(6, 0, date);            //显示到液晶上 
- 107   1      }
- 108          
- 109          /* 刷新闹钟的显示 */
- 110          void RefreshAlarm()
- 111          {
- 112   1          uint8 pdata str[6];
- 113   1          
- 114   1          str[0] = (AlarmHour >> 4) + '0';        //闹钟小时数
- 115   1          str[1] = (AlarmHour & 0x0f) + '0';
- 116   1          str[2] = ':';                           //分隔符
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 3   
+  55   1        time[5] = ':';
+  56   1        time[6] = (CurTime.sec >> 4) + '0';    //秒钟十位
+  57   1        time[7] = (CurTime.sec & 0x0f) + '0';  //秒钟个位
+  58   1        time[8] = '\0';                  //字符串结束符
+  59   1        LCD1602_Dis_Str(0, 1, time);         //显示到液晶上
+  60   1      } 
+  61          
+  62          /* 日期刷新函数，ops-刷新选项：为0时只当日期变化才刷新，非0则立即刷新 */
+  63          void RefreshDate(uint8 ops)
+  64          {
+  65   1          uint8 pdata date[12];
+  66   1          static uint8 backup = 0;
+  67   1      
+  68   1          if ((backup!=CurTime.day) || (ops!=0))//如果日期变化或刷新标志位置1则立即刷新
+  69   1          {
+  70   2          date[0] = ((CurTime.year>>12) & 0x0f) + '0';  //年份千位
+  71   2              date[1] = ((CurTime.year>>8) & 0x0f) + '0';   //年份百位
+  72   2              date[2] = ((CurTime.year>>4) & 0x0f) + '0';   //年份十位
+  73   2              date[3] = (CurTime.year & 0x0f) + '0';      //年份个位
+  74   2              date[4] = '-';                              //分隔符
+  75   2              date[5] = (CurTime.mon >> 4) + '0';         //月份十位
+  76   2              date[6] = (CurTime.mon & 0x0f) + '0';       //月份个位
+  77   2              date[7] = '-';                              //分隔符
+  78   2              date[8] = (CurTime.day >> 4) + '0';         //日期十位
+  79   2              date[9] = (CurTime.day & 0x0f) + '0';       //日期个位
+  80   2              date[10] = '\0';                    //字符串结束符
+  81   2              LCD1602_Dis_Str(0, 0, date);            //显示到液晶上
+  82   2          LCD1602_Dis_Str(12, 0, week[CurTime.week]);   //显示星期
+  83   2              backup = CurTime.day;               //刷新上次日期值
+  84   2          }
+  85   1      }
+  86          /*刷新阴历*/
+  87          void RefreshLunar()
+  88          {
+  89   1        uint8 pdata date[12];
+  90   1        GetRealTime(&CurTime); //获取当前日期/时间
+  91   1        Conversion(0, CurTime.year, CurTime.mon, CurTime.day);//根据公历算出阴历
+  92   1        date[0] = 0x02 + '0';  //年份千位
+  93   1        date[1] = 0x00 + '0';   //年份百位
+  94   1        date[2] = ((SpDate.year>>4) & 0x0f) + '0';    //年份十位
+  95   1        date[3] = (SpDate.year & 0x0f) + '0';     //年份个位
+  96   1        date[4] = '-';                              //分隔符
+  97   1        date[5] = (SpDate.mon >> 4) + '0';        //月份十位
+  98   1        date[6] = (SpDate.mon & 0x0f) + '0';      //月份个位
+  99   1        date[7] = '-';                              //分隔符
+ 100   1        date[8] = (SpDate.day >> 4) + '0';        //日期十位
+ 101   1        date[9] = (SpDate.day & 0x0f) + '0';      //日期个位
+ 102   1        date[10] = '\0';                    //字符串结束符
+ 103   1        LCD1602_Dis_Str(0, 0, "Lunar");         //阴历字符    
+ 104   1        LCD1602_Dis_Str(6, 0, date);            //显示到液晶上 
+ 105   1      }
+ 106          
+ 107          /* 刷新闹钟的显示 */
+ 108          void RefreshAlarm()
+ 109          {
+ 110   1          uint8 pdata str[6];
+ 111   1          
+ 112   1          str[0] = (AlarmHour >> 4) + '0';        //闹钟小时数
+ 113   1          str[1] = (AlarmHour & 0x0f) + '0';
+ 114   1          str[2] = ':';                           //分隔符
+ 115   1          str[3] = (AlarmMin >> 4) + '0';         //闹钟分钟数
+ 116   1          str[4] = (AlarmMin & 0x0f) + '0';
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 3   
 
- 117   1          str[3] = (AlarmMin >> 4) + '0';         //闹钟分钟数
- 118   1          str[4] = (AlarmMin & 0x0f) + '0';
- 119   1          str[5] = '\0';                          //字符串结束符
- 120   1        LCD1602_Dis_Str(0, 1, "Alarm ");        //显示提示标题
- 121   1        LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);  //显示闹钟状态 
- 122   1          LCD1602_Dis_Str(6, 1, str);               //显示到液晶上
- 123   1      }
- 124          
- 125          /* 闹钟监控函数，抵达设定的闹钟时间时执行闹铃 */
- 126          void AlarmMonitor()
- 127          {
- 128   1          if ((CurTime.hour == AlarmHour) && (CurTime.min == AlarmMin)) //检查时间匹配
- 129   1          {
- 130   2              if (!AlarmOn)      //检查闹钟是否打开
- 131   2                  staBuzzer(1);  //蜂鸣器鸣叫
- 132   2              else
- 133   2                  staBuzzer(0);  //蜂鸣器停止鸣叫
- 134   2          }
- 135   1          else
- 136   1          {
- 137   2              staBuzzer(0);      //时间不匹配时，蜂鸣器停止鸣叫
- 138   2          } 
- 139   1      }
- 140          
- 141          /* S2按键功能函数，时间或闹钟设置时，光标移动，到头后折回 */
- 142          void SetShift()
- 143          {
- 144   1          if (staSystem == E_SET_TIME)  //设置时间光标
- 145   1          {
- 146   2          switch (SetIndex)
- 147   2              {
- 148   3                  case 0: SetIndex=1;  LCD1602_Set_Cursor(7, 1); break;//光标位于秒钟个位处
- 149   3                  case 1: SetIndex=2;  LCD1602_Set_Cursor(4, 1); break;//光标位于分钟处
- 150   3                  case 2: SetIndex=3;  LCD1602_Set_Cursor(1, 1); break;//光标位于小时处
- 151   3                  case 3: SetIndex=4;  LCD1602_Set_Cursor(12, 0); break;//光标位于星期处
- 152   3                  case 4: SetIndex=5;  LCD1602_Set_Cursor(9, 0); break;//光标位于日处
- 153   3                  case 5: SetIndex=6;  LCD1602_Set_Cursor(6, 0); break;//光标位于月处
- 154   3                  default: SetIndex=0; LCD1602_Set_Cursor(3, 0); break;//光标位于年处
- 155   3              }
- 156   2          }
- 157   1          else if (staSystem == E_SET_ALARM) //设置闹钟光标
- 158   1          {
- 159   2              switch (SetIndex)
- 160   2              {
- 161   3                  case 0: SetIndex=1;  LCD1602_Set_Cursor(13, 1); break;//光标位于闹钟开关处
- 162   3            case 1: SetIndex=2;  LCD1602_Set_Cursor(10, 1); break;//光标位于闹钟分钟处
- 163   3                  default: SetIndex=0; LCD1602_Set_Cursor(7, 1); break; //光标位于闹钟小时处
- 164   3              }
- 165   2          }
- 166   1        else if (staSystem == E_NORMAL)//正常运行状态下，切换为显示阴历/闹钟
- 167   1        {
- 168   2          staSystem = Dis_Alarm;     //把系统状态更新为显示阴历/闹钟
- 169   2          LCD1602_Clear_Screen();    //LCD1602清屏
- 170   2          RefreshLunar();        //显示阴历
- 171   2          RefreshAlarm();        //显示闹钟
- 172   2        }
- 173   1        else if (staSystem == Dis_Alarm)//显示阴历/闹钟状态下，按S2可以切回显示公历和时间
- 174   1        {
- 175   2          staSystem = E_NORMAL;     //把系统状态更新为正常显示
- 176   2          LCD1602_Clear_Screen();   //LCD1602清屏
- 177   2          RefreshTime();        //刷新时间
- 178   2          RefreshDate(1);       //立即刷新日期
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 4   
+ 117   1          str[5] = '\0';                          //字符串结束符
+ 118   1        LCD1602_Dis_Str(0, 1, "Alarm ");        //显示提示标题
+ 119   1        LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);  //显示闹钟状态 
+ 120   1          LCD1602_Dis_Str(6, 1, str);               //显示到液晶上
+ 121   1      }
+ 122          
+ 123          /* 闹钟监控函数，抵达设定的闹钟时间时执行闹铃 */
+ 124          void AlarmMonitor()
+ 125          {
+ 126   1          if ((CurTime.hour == AlarmHour) && (CurTime.min == AlarmMin)) //检查时间匹配
+ 127   1          {
+ 128   2              if (!AlarmOn)      //检查闹钟是否打开
+ 129   2                  staBuzzer(1);  //蜂鸣器鸣叫
+ 130   2              else
+ 131   2                  staBuzzer(0);  //蜂鸣器停止鸣叫
+ 132   2          }
+ 133   1          else
+ 134   1          {
+ 135   2              staBuzzer(0);      //时间不匹配时，蜂鸣器停止鸣叫
+ 136   2          } 
+ 137   1      }
+ 138          
+ 139          /* S2按键功能函数，时间或闹钟设置时，光标移动，到头后折回 */
+ 140          void SetShift()
+ 141          {
+ 142   1          if (staSystem == E_SET_TIME)  //设置时间光标
+ 143   1          {
+ 144   2          switch (SetIndex)
+ 145   2              {
+ 146   3                  case 0: SetIndex=1;  LCD1602_Set_Cursor(7, 1); break;//光标位于秒钟个位处
+ 147   3                  case 1: SetIndex=2;  LCD1602_Set_Cursor(4, 1); break;//光标位于分钟处
+ 148   3                  case 2: SetIndex=3;  LCD1602_Set_Cursor(1, 1); break;//光标位于小时处
+ 149   3                  case 3: SetIndex=4;  LCD1602_Set_Cursor(12, 0); break;//光标位于星期处
+ 150   3                  case 4: SetIndex=5;  LCD1602_Set_Cursor(9, 0); break;//光标位于日处
+ 151   3                  case 5: SetIndex=6;  LCD1602_Set_Cursor(6, 0); break;//光标位于月处
+ 152   3                  default: SetIndex=0; LCD1602_Set_Cursor(3, 0); break;//光标位于年处
+ 153   3              }
+ 154   2          }
+ 155   1          else if (staSystem == E_SET_ALARM) //设置闹钟光标
+ 156   1          {
+ 157   2              switch (SetIndex)
+ 158   2              {
+ 159   3                  case 0: SetIndex=1;  LCD1602_Set_Cursor(13, 1); break;//光标位于闹钟开关处
+ 160   3            case 1: SetIndex=2;  LCD1602_Set_Cursor(10, 1); break;//光标位于闹钟分钟处
+ 161   3                  default: SetIndex=0; LCD1602_Set_Cursor(7, 1); break; //光标位于闹钟小时处
+ 162   3              }
+ 163   2          }
+ 164   1        else if (staSystem == E_NORMAL)//正常运行状态下，切换为显示阴历/闹钟
+ 165   1        {
+ 166   2          staSystem = Dis_Alarm;     //把系统状态更新为显示阴历/闹钟
+ 167   2          LCD1602_Clear_Screen();    //LCD1602清屏
+ 168   2          RefreshLunar();        //显示阴历
+ 169   2          RefreshAlarm();        //显示闹钟
+ 170   2        }
+ 171   1        else if (staSystem == Dis_Alarm)//显示阴历/闹钟状态下，按S2可以切回显示公历和时间
+ 172   1        {
+ 173   2          staSystem = E_NORMAL;     //把系统状态更新为正常显示
+ 174   2          LCD1602_Clear_Screen();   //LCD1602清屏
+ 175   2          RefreshTime();        //刷新时间
+ 176   2          RefreshDate(1);       //立即刷新日期
+ 177   2          RefreshTemp(1);       //立即刷新温度
+ 178   2        }
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 4   
 
- 179   2          RefreshTemp(1);       //立即刷新温度
- 180   2        }
- 181   1      }
- 182          
- 183          /* S5按键功能函数，切换系统运行状态 */
- 184          void SwitchSystemSta()
- 185          {
- 186   1          if (staSystem == E_NORMAL)  //正常运行切换到时间设置
- 187   1          {
- 188   2              staSystem = E_SET_TIME; //系统状态更新为设置时间
- 189   2              SetIndex = 0;       //光标索引设置到秒钟上
- 190   2              SetShift();       //显示光标位置
- 191   2              LCD1602_Open_Cursor();  //LCD1602打开光标显示
- 192   2          }
- 193   1          else if (staSystem == Dis_Alarm)//显示阴历/闹钟时，切换到设置闹钟
- 194   1          {
- 195   2              staSystem = E_SET_ALARM;  //系统状态更新为设置闹钟
- 196   2              SetIndex = 0;         //光标索引设置到秒钟上
- 197   2              SetShift();         //显示光标位置
- 198   2          LCD1602_Open_Cursor();    //LCD1602打开光标显示
- 199   2          }
- 200   1        else if (staSystem == E_SET_TIME)//设置公历/时钟的状态下
- 201   1        {
- 202   2          staSystem = E_NORMAL;    //系统状态更新为正常运行，显示公历/时钟、温度。
- 203   2          SetRealTime(&CurTime);       //把设定时间写入实时时钟
- 204   2          LCD1602_Close_Cursor();    //LCD1602关闭光标显示
- 205   2              LCD1602_Clear_Screen();    //LCD1602清屏
- 206   2          RefreshTime();         //刷新时间
- 207   2          RefreshDate(1);        //立即刷新日期
- 208   2          RefreshTemp(1);        //立即刷新温度 
- 209   2        }
- 210   1          else                 //设置闹钟的状态下
- 211   1          {
- 212   2              staSystem = E_NORMAL;    //系统状态更新为正常运行，显示公历/时钟、温度。
- 213   2            RefreshAlarm();        //写入闹钟设定值
- 214   2              LCD1602_Close_Cursor();    //LCD1602关闭光标显示
- 215   2              LCD1602_Clear_Screen();    //LCD1602清屏
- 216   2          RefreshTime();           //刷新时间
- 217   2          RefreshDate(1);        //立即刷新日期
- 218   2          RefreshTemp(1);        //立即刷新温度
- 219   2          }
- 220   1      }
- 221          /*S3按键功能函数，数据加*/
- 222          void SetDtate_Alarm_S3()
- 223          {
- 224   1        if (staSystem == E_SET_TIME) //设置公历/时间
- 225   1          {
- 226   2          switch (SetIndex)//检查光标位置
- 227   2              {       
- 228   3            case 1: SetDat = BCD_DEC(CurTime.sec);//把BCD码转为十进制
- 229   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置秒钟不超过59秒，超过则回到0
- 230   3                CurTime.sec = DEC_BCD(SetDat);//把十进制转为BCD码
- 231   3                LCD1602_Dis_OneChar(6, 1, (CurTime.sec >> 4) + '0');
- 232   3                LCD1602_Dis_OneChar(7, 1, (CurTime.sec & 0x0f) + '0');
- 233   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
- 234   3                break;
- 235   3      
- 236   3            case 2: SetDat = BCD_DEC(CurTime.min);//把BCD码转为十进制
- 237   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置分钟不超过59分，超过则回到0
- 238   3                CurTime.min = DEC_BCD(SetDat);//把十进制转为BCD码
- 239   3                LCD1602_Dis_OneChar(3, 1, (CurTime.min >> 4) + '0');
- 240   3                LCD1602_Dis_OneChar(4, 1, (CurTime.min & 0x0f) + '0');
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 5   
+ 179   1      }
+ 180          
+ 181          /* S5按键功能函数，切换系统运行状态 */
+ 182          void SwitchSystemSta()
+ 183          {
+ 184   1          if (staSystem == E_NORMAL)  //正常运行切换到时间设置
+ 185   1          {
+ 186   2              staSystem = E_SET_TIME; //系统状态更新为设置时间
+ 187   2              SetIndex = 0;       //光标索引设置到秒钟上
+ 188   2              SetShift();       //显示光标位置
+ 189   2              LCD1602_Open_Cursor();  //LCD1602打开光标显示
+ 190   2          }
+ 191   1          else if (staSystem == Dis_Alarm)//显示阴历/闹钟时，切换到设置闹钟
+ 192   1          {
+ 193   2              staSystem = E_SET_ALARM;  //系统状态更新为设置闹钟
+ 194   2              SetIndex = 0;         //光标索引设置到秒钟上
+ 195   2              SetShift();         //显示光标位置
+ 196   2          LCD1602_Open_Cursor();    //LCD1602打开光标显示
+ 197   2          }
+ 198   1        else if (staSystem == E_SET_TIME)//设置公历/时钟的状态下
+ 199   1        {
+ 200   2          staSystem = E_NORMAL;    //系统状态更新为正常运行，显示公历/时钟、温度。
+ 201   2          SetRealTime(&CurTime);       //把设定时间写入实时时钟
+ 202   2          LCD1602_Close_Cursor();    //LCD1602关闭光标显示
+ 203   2              LCD1602_Clear_Screen();    //LCD1602清屏
+ 204   2          RefreshTime();         //刷新时间
+ 205   2          RefreshDate(1);        //立即刷新日期
+ 206   2          RefreshTemp(1);        //立即刷新温度 
+ 207   2        }
+ 208   1          else                 //设置闹钟的状态下
+ 209   1          {
+ 210   2              staSystem = E_NORMAL;    //系统状态更新为正常运行，显示公历/时钟、温度。
+ 211   2            RefreshAlarm();        //写入闹钟设定值
+ 212   2              LCD1602_Close_Cursor();    //LCD1602关闭光标显示
+ 213   2              LCD1602_Clear_Screen();    //LCD1602清屏
+ 214   2          RefreshTime();           //刷新时间
+ 215   2          RefreshDate(1);        //立即刷新日期
+ 216   2          RefreshTemp(1);        //立即刷新温度
+ 217   2          }
+ 218   1      }
+ 219          /*S3按键功能函数，数据加*/
+ 220          void SetDtate_Alarm_S3()
+ 221          {
+ 222   1        if (staSystem == E_SET_TIME) //设置公历/时间
+ 223   1          {
+ 224   2          switch (SetIndex)//检查光标位置
+ 225   2              {       
+ 226   3            case 1: SetDat = BCD_DEC(CurTime.sec);//把BCD码转为十进制
+ 227   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置秒钟不超过59秒，超过则回到0
+ 228   3                CurTime.sec = DEC_BCD(SetDat);//把十进制转为BCD码
+ 229   3                LCD1602_Dis_OneChar(6, 1, (CurTime.sec >> 4) + '0');
+ 230   3                LCD1602_Dis_OneChar(7, 1, (CurTime.sec & 0x0f) + '0');
+ 231   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
+ 232   3                break;
+ 233   3      
+ 234   3            case 2: SetDat = BCD_DEC(CurTime.min);//把BCD码转为十进制
+ 235   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置分钟不超过59分，超过则回到0
+ 236   3                CurTime.min = DEC_BCD(SetDat);//把十进制转为BCD码
+ 237   3                LCD1602_Dis_OneChar(3, 1, (CurTime.min >> 4) + '0');
+ 238   3                LCD1602_Dis_OneChar(4, 1, (CurTime.min & 0x0f) + '0');
+ 239   3                LCD1602_Set_Cursor(4, 1);//光标保持原位
+ 240   3                break;
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 5   
 
- 241   3                LCD1602_Set_Cursor(4, 1);//光标保持原位
- 242   3                break;
- 243   3      
- 244   3            case 3: SetDat = BCD_DEC(CurTime.hour);//把BCD码转为十进制
- 245   3                if (SetDat < 23) SetDat++; else SetDat = 0;//限制设置小时不超过23时，超过则回到0
- 246   3                CurTime.hour = DEC_BCD(SetDat);//把十进制转为BCD码
- 247   3                LCD1602_Dis_OneChar(0, 1, (CurTime.hour >> 4) + '0');
- 248   3                LCD1602_Dis_OneChar(1, 1, (CurTime.hour & 0x0f) + '0');
- 249   3                LCD1602_Set_Cursor(1, 1);//光标保持原位
- 250   3                break;
- 251   3      
- 252   3            case 4: //限制不超过星期日，如果超过则回到周一
- 253   3                if (CurTime.week < 7) CurTime.week++; else CurTime.week = 1;
- 254   3                LCD1602_Dis_Str(12, 0, week[CurTime.week]);  //显示到液晶上;
- 255   3                LCD1602_Set_Cursor(12, 0);//光标保持原位
- 256   3                break;
- 257   3      
- 258   3            case 5: SetDat = BCD_DEC(CurTime.day);//把BCD码转为十进制
- 259   3                if (SetDat < 31) SetDat++; else SetDat = 1;//限制设置日期不超过31日，超过则回到1
- 260   3                CurTime.day = DEC_BCD(SetDat);//把十进制转为BCD码
- 261   3                LCD1602_Dis_OneChar(8, 0, (CurTime.day >> 4) + '0');
- 262   3                LCD1602_Dis_OneChar(9, 0, (CurTime.day & 0x0f) + '0');
- 263   3                LCD1602_Set_Cursor(9, 0);//光标保持原位
- 264   3                break;
- 265   3      
- 266   3            case 6: SetDat = BCD_DEC(CurTime.mon);//把BCD码转为十进制
- 267   3                if (SetDat < 12) SetDat++; else SetDat = 1;//限制设置月份不超过12月，超过则回到1
- 268   3                CurTime.mon = DEC_BCD(SetDat);//把十进制转为BCD码
- 269   3                LCD1602_Dis_OneChar(5, 0, (CurTime.mon >> 4) + '0');
- 270   3                LCD1602_Dis_OneChar(6, 0, (CurTime.mon & 0x0f) + '0');
- 271   3                LCD1602_Set_Cursor(6, 0);//光标保持原位
- 272   3                break;
- 273   3      
- 274   3            case 0: SetDat = BCD_DEC(CurTime.year);//把BCD码转为十进制
- 275   3                if (SetDat < 99) SetDat++; else SetDat = 0;//限制设置年不超过99年，超过则回到0
- 276   3                CurTime.year = DEC_BCD(SetDat);//把十进制转为BCD码
- 277   3                LCD1602_Dis_OneChar(2, 0, (CurTime.year >> 4) + '0');
- 278   3                LCD1602_Dis_OneChar(3, 0, (CurTime.year & 0x0f) + '0');
- 279   3                LCD1602_Set_Cursor(3, 0);//光标保持原位
- 280   3                break;
- 281   3          } 
- 282   2        }
- 283   1        else if (staSystem == E_SET_ALARM)//设置闹钟
- 284   1        {
- 285   2          switch (SetIndex)//检查光标位置
- 286   2              {
- 287   3            case 1: AlarmOn = ~AlarmOn;
- 288   3                LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);//显示闹钟状态 
- 289   3                LCD1602_Set_Cursor(13, 1);//光标保持原位
- 290   3                break;
- 291   3                      
- 292   3            case 2: SetDat = BCD_DEC(AlarmMin);//把BCD码转为十进制
- 293   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置分钟不超过59分，超过则回到0
- 294   3                AlarmMin = DEC_BCD(SetDat);//把十进制转为BCD码
- 295   3                LCD1602_Dis_OneChar(9, 1, (AlarmMin >> 4) + '0');
- 296   3                LCD1602_Dis_OneChar(10, 1, (AlarmMin & 0x0f) + '0');
- 297   3                LCD1602_Set_Cursor(10, 1);//光标保持原位
- 298   3                break;
- 299   3      
- 300   3            case 0: SetDat = BCD_DEC(AlarmHour);//把BCD码转为十进制
- 301   3                if (SetDat < 23) SetDat++; else SetDat = 0;//限制设置小时不超过23时，超过则回到0
- 302   3                AlarmHour = DEC_BCD(SetDat);//把十进制转为BCD码 
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 6   
+ 241   3      
+ 242   3            case 3: SetDat = BCD_DEC(CurTime.hour);//把BCD码转为十进制
+ 243   3                if (SetDat < 23) SetDat++; else SetDat = 0;//限制设置小时不超过23时，超过则回到0
+ 244   3                CurTime.hour = DEC_BCD(SetDat);//把十进制转为BCD码
+ 245   3                LCD1602_Dis_OneChar(0, 1, (CurTime.hour >> 4) + '0');
+ 246   3                LCD1602_Dis_OneChar(1, 1, (CurTime.hour & 0x0f) + '0');
+ 247   3                LCD1602_Set_Cursor(1, 1);//光标保持原位
+ 248   3                break;
+ 249   3      
+ 250   3            case 4: //限制不超过星期日，如果超过则回到周一
+ 251   3                if (CurTime.week < 7) CurTime.week++; else CurTime.week = 1;
+ 252   3                LCD1602_Dis_Str(12, 0, week[CurTime.week]);  //显示到液晶上;
+ 253   3                LCD1602_Set_Cursor(12, 0);//光标保持原位
+ 254   3                break;
+ 255   3      
+ 256   3            case 5: SetDat = BCD_DEC(CurTime.day);//把BCD码转为十进制
+ 257   3                if (SetDat < 31) SetDat++; else SetDat = 1;//限制设置日期不超过31日，超过则回到1
+ 258   3                CurTime.day = DEC_BCD(SetDat);//把十进制转为BCD码
+ 259   3                LCD1602_Dis_OneChar(8, 0, (CurTime.day >> 4) + '0');
+ 260   3                LCD1602_Dis_OneChar(9, 0, (CurTime.day & 0x0f) + '0');
+ 261   3                LCD1602_Set_Cursor(9, 0);//光标保持原位
+ 262   3                break;
+ 263   3      
+ 264   3            case 6: SetDat = BCD_DEC(CurTime.mon);//把BCD码转为十进制
+ 265   3                if (SetDat < 12) SetDat++; else SetDat = 1;//限制设置月份不超过12月，超过则回到1
+ 266   3                CurTime.mon = DEC_BCD(SetDat);//把十进制转为BCD码
+ 267   3                LCD1602_Dis_OneChar(5, 0, (CurTime.mon >> 4) + '0');
+ 268   3                LCD1602_Dis_OneChar(6, 0, (CurTime.mon & 0x0f) + '0');
+ 269   3                LCD1602_Set_Cursor(6, 0);//光标保持原位
+ 270   3                break;
+ 271   3      
+ 272   3            case 0: SetDat = BCD_DEC(CurTime.year);//把BCD码转为十进制
+ 273   3                if (SetDat < 99) SetDat++; else SetDat = 0;//限制设置年不超过99年，超过则回到0
+ 274   3                CurTime.year = DEC_BCD(SetDat);//把十进制转为BCD码
+ 275   3                LCD1602_Dis_OneChar(2, 0, (CurTime.year >> 4) + '0');
+ 276   3                LCD1602_Dis_OneChar(3, 0, (CurTime.year & 0x0f) + '0');
+ 277   3                LCD1602_Set_Cursor(3, 0);//光标保持原位
+ 278   3                break;
+ 279   3          } 
+ 280   2        }
+ 281   1        else if (staSystem == E_SET_ALARM)//设置闹钟
+ 282   1        {
+ 283   2          switch (SetIndex)//检查光标位置
+ 284   2              {
+ 285   3            case 1: AlarmOn = ~AlarmOn;
+ 286   3                LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);//显示闹钟状态 
+ 287   3                LCD1602_Set_Cursor(13, 1);//光标保持原位
+ 288   3                break;
+ 289   3                      
+ 290   3            case 2: SetDat = BCD_DEC(AlarmMin);//把BCD码转为十进制
+ 291   3                if (SetDat < 59) SetDat++; else SetDat = 0;//限制设置分钟不超过59分，超过则回到0
+ 292   3                AlarmMin = DEC_BCD(SetDat);//把十进制转为BCD码
+ 293   3                LCD1602_Dis_OneChar(9, 1, (AlarmMin >> 4) + '0');
+ 294   3                LCD1602_Dis_OneChar(10, 1, (AlarmMin & 0x0f) + '0');
+ 295   3                LCD1602_Set_Cursor(10, 1);//光标保持原位
+ 296   3                break;
+ 297   3      
+ 298   3            case 0: SetDat = BCD_DEC(AlarmHour);//把BCD码转为十进制
+ 299   3                if (SetDat < 23) SetDat++; else SetDat = 0;//限制设置小时不超过23时，超过则回到0
+ 300   3                AlarmHour = DEC_BCD(SetDat);//把十进制转为BCD码 
+ 301   3                LCD1602_Dis_OneChar(6, 1, (AlarmHour >> 4) + '0');
+ 302   3                LCD1602_Dis_OneChar(7, 1, (AlarmHour & 0x0f) + '0');
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 6   
 
- 303   3                LCD1602_Dis_OneChar(6, 1, (AlarmHour >> 4) + '0');
- 304   3                LCD1602_Dis_OneChar(7, 1, (AlarmHour & 0x0f) + '0');
- 305   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
- 306   3                break;
- 307   3          }   
- 308   2        } 
- 309   1      }
- 310          /*S4按键功能函数，数据减*/
- 311          void SetDtate_Alarm_S4()
- 312          {
- 313   1        if (staSystem == E_SET_TIME) //设置公历/时间
- 314   1          {
- 315   2          switch (SetIndex) //检查光标位置
- 316   2              {       
- 317   3            case 1: SetDat = BCD_DEC(CurTime.sec);//把BCD码转为十进制
- 318   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置秒钟不为0时减1，为0时回到59
- 319   3                CurTime.sec = DEC_BCD(SetDat);//把十进制转为BCD码
- 320   3                LCD1602_Dis_OneChar(6, 1, (CurTime.sec >> 4) + '0');
- 321   3                LCD1602_Dis_OneChar(7, 1, (CurTime.sec & 0x0f) + '0');
- 322   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
- 323   3                break;
- 324   3      
- 325   3            case 2: SetDat = BCD_DEC(CurTime.min);//把BCD码转为十进制
- 326   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置分钟不为0时减1，为0时回到59
- 327   3                CurTime.min = DEC_BCD(SetDat);//把十进制转为BCD码
- 328   3                LCD1602_Dis_OneChar(3, 1, (CurTime.min >> 4) + '0');
- 329   3                LCD1602_Dis_OneChar(4, 1, (CurTime.min & 0x0f) + '0');
- 330   3                LCD1602_Set_Cursor(4, 1);//光标保持原位
- 331   3                break;
- 332   3      
- 333   3            case 3: SetDat = BCD_DEC(CurTime.hour);//把BCD码转为十进制
- 334   3                if (SetDat != 0) SetDat--; else SetDat = 23;//限制设置小时不为0时减1，为0时回到23
- 335   3                CurTime.hour = DEC_BCD(SetDat);//把十进制转为BCD码
- 336   3                LCD1602_Dis_OneChar(0, 1, (CurTime.hour >> 4) + '0');
- 337   3                LCD1602_Dis_OneChar(1, 1, (CurTime.hour & 0x0f) + '0');
- 338   3                LCD1602_Set_Cursor(1, 1);//光标保持原位
- 339   3                break;
- 340   3      
- 341   3            case 4: //如果为当前为星期一时，回到星期天
- 342   3                if (CurTime.week != 1) CurTime.week--; else CurTime.week = 7;
- 343   3                LCD1602_Dis_Str(12, 0, week[CurTime.week]);  //显示到液晶上;
- 344   3                LCD1602_Set_Cursor(12, 0);//光标保持原位
- 345   3                break;
- 346   3      
- 347   3            case 5: SetDat = BCD_DEC(CurTime.day);//把BCD码转为十进制
- 348   3                if (SetDat != 1) SetDat--; else SetDat = 31;//限制设置日期不为1时减1，为0时回到31
- 349   3                CurTime.day = DEC_BCD(SetDat);//把十进制转为BCD码
- 350   3                LCD1602_Dis_OneChar(8, 0, (CurTime.day >> 4) + '0');
- 351   3                LCD1602_Dis_OneChar(9, 0, (CurTime.day & 0x0f) + '0');
- 352   3                LCD1602_Set_Cursor(9, 0);//光标保持原位
- 353   3                break;
- 354   3      
- 355   3            case 6: SetDat = BCD_DEC(CurTime.mon);//把BCD码转为十进制
- 356   3                if (SetDat != 1) SetDat--; else SetDat = 12;//限制设置月份不为1时减1，为0时回到12
- 357   3                CurTime.mon = DEC_BCD(SetDat);//把十进制转为BCD码
- 358   3                LCD1602_Dis_OneChar(5, 0, (CurTime.mon >> 4) + '0');
- 359   3                LCD1602_Dis_OneChar(6, 0, (CurTime.mon & 0x0f) + '0');
- 360   3                LCD1602_Set_Cursor(6, 0);//光标保持原位
- 361   3                break;
- 362   3      
- 363   3            case 0: SetDat = BCD_DEC(CurTime.year);//把BCD码转为十进制
- 364   3                if (SetDat != 0) SetDat--; else SetDat = 99;//限制设置年不为0时减1，为0时回到99
-C51 COMPILER V9.60.0.0   APP                                                               01/02/2021 20:11:12 PAGE 7   
+ 303   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
+ 304   3                break;
+ 305   3          }   
+ 306   2        } 
+ 307   1      }
+ 308          /*S4按键功能函数，数据减*/
+ 309          void SetDtate_Alarm_S4()
+ 310          {
+ 311   1        if (staSystem == E_SET_TIME) //设置公历/时间
+ 312   1          {
+ 313   2          switch (SetIndex) //检查光标位置
+ 314   2              {       
+ 315   3            case 1: SetDat = BCD_DEC(CurTime.sec);//把BCD码转为十进制
+ 316   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置秒钟不为0时减1，为0时回到59
+ 317   3                CurTime.sec = DEC_BCD(SetDat);//把十进制转为BCD码
+ 318   3                LCD1602_Dis_OneChar(6, 1, (CurTime.sec >> 4) + '0');
+ 319   3                LCD1602_Dis_OneChar(7, 1, (CurTime.sec & 0x0f) + '0');
+ 320   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
+ 321   3                break;
+ 322   3      
+ 323   3            case 2: SetDat = BCD_DEC(CurTime.min);//把BCD码转为十进制
+ 324   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置分钟不为0时减1，为0时回到59
+ 325   3                CurTime.min = DEC_BCD(SetDat);//把十进制转为BCD码
+ 326   3                LCD1602_Dis_OneChar(3, 1, (CurTime.min >> 4) + '0');
+ 327   3                LCD1602_Dis_OneChar(4, 1, (CurTime.min & 0x0f) + '0');
+ 328   3                LCD1602_Set_Cursor(4, 1);//光标保持原位
+ 329   3                break;
+ 330   3      
+ 331   3            case 3: SetDat = BCD_DEC(CurTime.hour);//把BCD码转为十进制
+ 332   3                if (SetDat != 0) SetDat--; else SetDat = 23;//限制设置小时不为0时减1，为0时回到23
+ 333   3                CurTime.hour = DEC_BCD(SetDat);//把十进制转为BCD码
+ 334   3                LCD1602_Dis_OneChar(0, 1, (CurTime.hour >> 4) + '0');
+ 335   3                LCD1602_Dis_OneChar(1, 1, (CurTime.hour & 0x0f) + '0');
+ 336   3                LCD1602_Set_Cursor(1, 1);//光标保持原位
+ 337   3                break;
+ 338   3      
+ 339   3            case 4: //如果为当前为星期一时，回到星期天
+ 340   3                if (CurTime.week != 1) CurTime.week--; else CurTime.week = 7;
+ 341   3                LCD1602_Dis_Str(12, 0, week[CurTime.week]);  //显示到液晶上;
+ 342   3                LCD1602_Set_Cursor(12, 0);//光标保持原位
+ 343   3                break;
+ 344   3      
+ 345   3            case 5: SetDat = BCD_DEC(CurTime.day);//把BCD码转为十进制
+ 346   3                if (SetDat != 1) SetDat--; else SetDat = 31;//限制设置日期不为1时减1，为0时回到31
+ 347   3                CurTime.day = DEC_BCD(SetDat);//把十进制转为BCD码
+ 348   3                LCD1602_Dis_OneChar(8, 0, (CurTime.day >> 4) + '0');
+ 349   3                LCD1602_Dis_OneChar(9, 0, (CurTime.day & 0x0f) + '0');
+ 350   3                LCD1602_Set_Cursor(9, 0);//光标保持原位
+ 351   3                break;
+ 352   3      
+ 353   3            case 6: SetDat = BCD_DEC(CurTime.mon);//把BCD码转为十进制
+ 354   3                if (SetDat != 1) SetDat--; else SetDat = 12;//限制设置月份不为1时减1，为0时回到12
+ 355   3                CurTime.mon = DEC_BCD(SetDat);//把十进制转为BCD码
+ 356   3                LCD1602_Dis_OneChar(5, 0, (CurTime.mon >> 4) + '0');
+ 357   3                LCD1602_Dis_OneChar(6, 0, (CurTime.mon & 0x0f) + '0');
+ 358   3                LCD1602_Set_Cursor(6, 0);//光标保持原位
+ 359   3                break;
+ 360   3      
+ 361   3            case 0: SetDat = BCD_DEC(CurTime.year);//把BCD码转为十进制
+ 362   3                if (SetDat != 0) SetDat--; else SetDat = 99;//限制设置年不为0时减1，为0时回到99
+ 363   3                CurTime.year = DEC_BCD(SetDat);//把十进制转为BCD码
+ 364   3                LCD1602_Dis_OneChar(2, 0, (CurTime.year >> 4) + '0');
+C51 COMPILER V9.60.0.0   APP                                                               01/04/2021 15:27:24 PAGE 7   
 
- 365   3                CurTime.year = DEC_BCD(SetDat);//把十进制转为BCD码
- 366   3                LCD1602_Dis_OneChar(2, 0, (CurTime.year >> 4) + '0');
- 367   3                LCD1602_Dis_OneChar(3, 0, (CurTime.year & 0x0f) + '0');
- 368   3                LCD1602_Set_Cursor(3, 0);//光标保持原位
- 369   3                break;
- 370   3          }   
- 371   2        }
- 372   1        else if (staSystem == E_SET_ALARM) //设置闹钟
- 373   1        {
- 374   2          switch (SetIndex) //检查光标位置
- 375   2              {
- 376   3            case 1: AlarmOn = ~AlarmOn;
- 377   3                LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);//显示闹钟状态 
- 378   3                LCD1602_Set_Cursor(13, 1);//光标保持原位
- 379   3                break;
- 380   3      
- 381   3            case 2: SetDat = BCD_DEC(AlarmMin);//把BCD码转为十进制
- 382   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置分钟不为0时减1，为0时回到59
- 383   3                AlarmMin = DEC_BCD(SetDat);//把十进制转为BCD码 
- 384   3                LCD1602_Dis_OneChar(9, 1, (AlarmMin >> 4) + '0');
- 385   3                LCD1602_Dis_OneChar(10, 1, (AlarmMin & 0x0f) + '0');
- 386   3                LCD1602_Set_Cursor(10, 1);//光标保持原位
- 387   3                break;
- 388   3      
- 389   3            case 0: SetDat = BCD_DEC(AlarmHour);//把BCD码转为十进制
- 390   3                if (SetDat != 0) SetDat--; else SetDat = 23;//限制设置小时不为0时减1，为0时回到59
- 391   3                AlarmHour = DEC_BCD(SetDat);//把十进制转为BCD码
- 392   3                LCD1602_Dis_OneChar(6, 1, (AlarmHour >> 4) + '0');
- 393   3                LCD1602_Dis_OneChar(7, 1, (AlarmHour & 0x0f) + '0');
- 394   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
- 395   3                break;
- 396   3          }   
- 397   2        } 
- 398   1      }
- 399          
- 400          
- 401          /*按键驱动*/
- 402          void KeyAction(uint8 keycode)
- 403          {
- 404   1        switch (keycode)
- 405   1        {
- 406   2          case 0x0d: SetShift();          break;  //按下S2,显示切换键，在设置状态下为设置左移键
- 407   2              case 0x26: SetDtate_Alarm_S3(); break;  //按下S3,数据加
- 408   2              case 0x28: SetDtate_Alarm_S4(); break;  //按下S4,数据减
- 409   2              case 0x1b: SwitchSystemSta();   break;  //按下S5,设置键
- 410   2          default: break;
- 411   2        }
- 412   1      }
+ 365   3                LCD1602_Dis_OneChar(3, 0, (CurTime.year & 0x0f) + '0');
+ 366   3                LCD1602_Set_Cursor(3, 0);//光标保持原位
+ 367   3                break;
+ 368   3          }   
+ 369   2        }
+ 370   1        else if (staSystem == E_SET_ALARM) //设置闹钟
+ 371   1        {
+ 372   2          switch (SetIndex) //检查光标位置
+ 373   2              {
+ 374   3            case 1: AlarmOn = ~AlarmOn;
+ 375   3                LCD1602_Dis_Str(13, 1, AlarmSta[AlarmOn]);//显示闹钟状态 
+ 376   3                LCD1602_Set_Cursor(13, 1);//光标保持原位
+ 377   3                break;
+ 378   3      
+ 379   3            case 2: SetDat = BCD_DEC(AlarmMin);//把BCD码转为十进制
+ 380   3                if (SetDat != 0) SetDat--; else SetDat = 59;//限制设置分钟不为0时减1，为0时回到59
+ 381   3                AlarmMin = DEC_BCD(SetDat);//把十进制转为BCD码 
+ 382   3                LCD1602_Dis_OneChar(9, 1, (AlarmMin >> 4) + '0');
+ 383   3                LCD1602_Dis_OneChar(10, 1, (AlarmMin & 0x0f) + '0');
+ 384   3                LCD1602_Set_Cursor(10, 1);//光标保持原位
+ 385   3                break;
+ 386   3      
+ 387   3            case 0: SetDat = BCD_DEC(AlarmHour);//把BCD码转为十进制
+ 388   3                if (SetDat != 0) SetDat--; else SetDat = 23;//限制设置小时不为0时减1，为0时回到59
+ 389   3                AlarmHour = DEC_BCD(SetDat);//把十进制转为BCD码
+ 390   3                LCD1602_Dis_OneChar(6, 1, (AlarmHour >> 4) + '0');
+ 391   3                LCD1602_Dis_OneChar(7, 1, (AlarmHour & 0x0f) + '0');
+ 392   3                LCD1602_Set_Cursor(7, 1);//光标保持原位
+ 393   3                break;
+ 394   3          }   
+ 395   2        } 
+ 396   1      }
+ 397          
+ 398          
+ 399          /*按键驱动*/
+ 400          void KeyAction(uint8 keycode)
+ 401          {
+ 402   1        switch (keycode)
+ 403   1        {
+ 404   2          case 0x0d: SetShift();          break;  //按下S2,显示切换键，在设置状态下为设置左移键
+ 405   2              case 0x26: SetDtate_Alarm_S3(); break;  //按下S3,数据加
+ 406   2              case 0x28: SetDtate_Alarm_S4(); break;  //按下S4,数据减
+ 407   2              case 0x1b: SwitchSystemSta();   break;  //按下S5,设置键
+ 408   2          default: break;
+ 409   2        }
+ 410   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

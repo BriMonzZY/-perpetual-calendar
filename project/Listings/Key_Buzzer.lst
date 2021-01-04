@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   KEY_BUZZER                                                        01/02/2021 20:11:12 PAGE 1   
+C51 COMPILER V9.60.0.0   KEY_BUZZER                                                        01/04/2021 15:27:23 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEY_BUZZER
@@ -62,7 +62,7 @@ line level    source
   52   1        {
   53   2          flag = 0;//扫描次数清零
   54   2          for (i=0; i<4; i++)  //读取4个独立的值
-C51 COMPILER V9.60.0.0   KEY_BUZZER                                                        01/02/2021 20:11:12 PAGE 2   
+C51 COMPILER V9.60.0.0   KEY_BUZZER                                                        01/04/2021 15:27:23 PAGE 2   
 
   55   2          {
   56   3            if ((keybuf[i] & 0x0f) == 0x00)
